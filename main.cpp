@@ -129,6 +129,44 @@ void editTu(NodeTu* dict, string tu, string nghia){
 	return;
 }
 
+void searchStandFor(NodeTu* &p, NodeTu* &q){
+	if (q->left != NULL){
+		searchStandFor(p, q->left);
+	} else {
+//		cout<<q->tu<<": "<<q->nghia<<endl;
+		p->tu = q->tu;
+		p->nghia = q->nghia;
+		p = q;
+		q = q->right;
+	}
+}
+
+
+int delNode(NodeTu* &dict, string tu){
+	if (dict == NULL)
+		return 0;
+	if (tu < dict->tu)
+		return delNode(dict->left, tu);
+	if (tu > dict->tu)
+		return delNode(dict->right, tu);
+	else { // tu == dict->tu
+		NodeTu* p = dict;
+		if (dict->left == NULL){
+			dict = dict->right;
+			return 1;
+		} else if (dict->right == NULL){
+			dict = dict->left;
+			return 1;
+		} else { // dict co ca 2 nhanh
+			NodeTu* q = dict->right;
+			searchStandFor(p, q);
+			delete p;
+			return 1;
+		}
+		
+	}
+}
+
 int main(int argc, char *argv[]){
 	char* path = "E:\\dict.txt";
 	readDictData(path);
@@ -139,7 +177,8 @@ int main(int argc, char *argv[]){
 //	char* path2 = "E:\\doc.txt";
 //	readDocument(path2);
 	
-	editTu(dict, "today", "ngay hom nay");
+	delNode(dict, "what");
+	cout<<"---------------------------------"<<endl;
 	printDict(dict);
 	
 	getch();
